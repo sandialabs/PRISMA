@@ -1,0 +1,14 @@
+__pycache__
+*.png
+*.npy
+*.zip
+*.tar
+*.gz
+*.whl
+.vscode
+dist
+dependency_links.txt
+PKG-Info
+requires.txt
+SOURCES.txt
+top_level.txt

@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prisma"
+version = "0.0.1"
+dependencies = [
+  "ipykernel >= 6.29",
+  "jax >= 0.6",
+  "line_profiler >= 4.2",
+  "matplotlib >= 3.10",
+  "nanonis_spm >= 1.0",
+  "numpy >= 2.3",
+  "scipy >= 1.15",
+]
+requires-python = ">= 3.13"
+authors = [
+  { name="Dante Basile", email="dbasile@purdue.edu" },
+  { name="Xavier Tricoche", email="xmt@purdue.edu" },
+  { name="Andy Mounce" },
+  { name="Sam Lilak" },
+  { name="Luca Basso" },
+  { name="Ezra Bussmann" },
+]
+description = """
+PRISMA (Physics-informed Regression and Inference for Statistics-driven Measurement Acquisition) is a Bayesian online nonlinear regression algorithm for active learning and SOED in spectroscopy experiments."""
+readme = "README.md"
+license = "BSD-3-Clause"
+license-files = ["LICEN[CS]E*"]
+keywords = [
+  "machine learning",
+  "ML",
+  "Bayesian",
+  "nonlinear regression",
+  "spectroscopy",
+  "curve fitting",
+  "online learning",
+  "active learning",
+  "optimal experimental design",
+  "OED",
+  "sequential optimal experimental design",
+  "SOED",
+  "instrument control",
+  "real-time control",
+  "JAX",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Development Status :: 4 - Beta",
+  "Framework :: Jupyter",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+# [project.urls]
+# Repository = "https://github.com/me/spam.git"

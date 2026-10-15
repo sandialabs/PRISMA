@@ -1,0 +1,8 @@
+This software uses methods derived from the SciPy utility
+scipy.optimize.curve_fit to compute the Fisher Information Matrix (FIM) of
+parameter fits. SciPy is compatibly licensed.
+
+Name: scipy.optimize.curve_fit
+Files: src/prisma/nlr/nlr_parameter_fit_lib.py
+License: BSD-3-Clause
+  For details, see src/prisma/nlr/SciPy/LICENSE.txt
