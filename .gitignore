@@ -5,10 +5,6 @@ __pycache__
 *.tar
 *.gz
 *.whl
+*.egg-info
 .vscode
 dist
-dependency_links.txt
-PKG-Info
-requires.txt
-SOURCES.txt
-top_level.txt
