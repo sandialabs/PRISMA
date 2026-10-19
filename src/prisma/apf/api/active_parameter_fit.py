@@ -1,12 +1,15 @@
 from abc import ABC, abstractmethod
+import jax
+import jax.numpy as jnp
 from jax.stages import Wrapped
 import numpy as np
 from numpy.typing import ArrayLike
 
 from ..util.active_parameter_fit_jax_lib import get_nonlin_f_x_j, \
     acq_f_sigma_sq_predictive_j, acq_f_rp_j, \
-    init_arr_j, init_arr_rp_j, \
-    posterior_update
+    acq_f_ei_j, \
+    init_arr_j, init_arr_rp_j, init_arr_ei_j, \
+    posterior_update_j
 from prisma.file import save_np_val
 from prisma.plot import plot_predictive_train_iter, \
     plot_acq_train_iter, plot_predictive_acq_train_iter, plot_w_rmse, \
@@ -20,6 +23,7 @@ class AbstractActiveParameterFit(ABC):
                  t_sampler: AbstractDomainSampler,
                  beta: float, m_0: ArrayLike, S_0: ArrayLike,
                  sample_ct: int):
+        # TODO: initialize all jit argument vars as jnp
         self.nonlin_f_j = nonlin_f_j
         self.acq_domain = acq_domain
         self.t_sampler = t_sampler
@@ -41,11 +45,11 @@ class AbstractActiveParameterFit(ABC):
             t_next = self.t_sampler.sample(x_next)
             self.x_n_jnp, self.t_n_jnp, self.acq_val_jnp, \
                 self.phi_n_jnp, self.m_prior_jnp, self.var_prior_jnp \
-                = posterior_update(x_next, acq_val_next, t_next,
-                                   self.nonlin_f_j, self.beta,
-                                   i, self.x_n_jnp, self.t_n_jnp,
-                                   self.phi_n_jnp, self.m_prior_jnp,
-                                   self.var_prior_jnp, self.acq_val_jnp)
+                = posterior_update_j(x_next, acq_val_next, t_next,
+                                     self.nonlin_f_j, self.beta,
+                                     i, self.x_n_jnp, self.t_n_jnp,
+                                     self.phi_n_jnp, self.m_prior_jnp,
+                                     self.var_prior_jnp, self.acq_val_jnp)
 
     def fit_sampler_reset(self):
         self.t_sampler.reset()
@@ -108,6 +112,9 @@ class AbstractActiveParameterFit(ABC):
 
 
 class ActiveParameterFitSigmaSqPred(AbstractActiveParameterFit):
+    '''
+    Predictive variance
+    '''
 
     def _acquisition_f(self, i):
         x_next, acq = acq_f_sigma_sq_predictive_j(self.nonlin_f_j_N,
@@ -119,11 +126,15 @@ class ActiveParameterFitSigmaSqPred(AbstractActiveParameterFit):
 
 
 class ActiveParameterFitRP(AbstractActiveParameterFit):
+    '''
+    Normal repulsion
+    '''
 
     def __init__(self, nonlin_f_j: Wrapped, acq_domain: ArrayLike,
                  t_sampler: AbstractDomainSampler,
                  beta: float, m_0: ArrayLike, S_0: ArrayLike,
-                 sample_ct: int, magnitude_rp: float, scale_rp: float):
+                 sample_ct: int,
+                 magnitude_rp: float, scale_rp: float):
         super().__init__(nonlin_f_j, acq_domain, t_sampler, beta, m_0, S_0,
                          sample_ct)
         self.mag_rp = magnitude_rp
@@ -133,9 +144,39 @@ class ActiveParameterFitRP(AbstractActiveParameterFit):
     def _acquisition_f(self, i):
         x_next, acq, rp_next = acq_f_rp_j(self.nonlin_f_j_N, self.acq_domain,
                                           self.beta, i,
-                                          self.m_prior_jnp,
-                                          self.var_prior_jnp,
+                                          self.m_prior_jnp, self.var_prior_jnp,
                                           self.mag_rp, self.scl_rp,
                                           self.rp_jnp)
         self.rp_jnp = rp_next
+        return x_next, acq
+
+
+class ActiveParameterFitEI(AbstractActiveParameterFit):
+    '''
+    Expected Improvement
+    '''
+
+    def __init__(self, nonlin_f_j: Wrapped, acq_domain: ArrayLike,
+                 t_sampler: AbstractDomainSampler,
+                 beta: float, m_0: ArrayLike, S_0: ArrayLike,
+                 sample_ct: int,
+                 range_delta: ArrayLike,
+                 m_mask: ArrayLike = None):
+        super().__init__(nonlin_f_j, acq_domain, t_sampler, beta, m_0, S_0,
+                         sample_ct)
+        if m_mask is None:
+            m_mask = np.ones(self.param_ct)
+        if jax.config.read('jax_enable_x64'):
+            self.eps_j = jnp.finfo(jnp.float64).eps
+        else:
+            self.eps_j = jnp.finfo(jnp.float32).eps
+        self.m_mask_jnp, self.range_delta_jnp = init_arr_ei_j(m_mask,
+                                                              range_delta)
+
+    def _acquisition_f(self, i):
+        x_next, acq, = acq_f_ei_j(self.nonlin_f_j_N, self.nonlin_f_j,
+                                  self.acq_domain, self.beta, i,
+                                  self.m_prior_jnp, self.var_prior_jnp,
+                                  self.range_delta_jnp, self.m_mask_jnp,
+                                  self.eps_j)
         return x_next, acq
