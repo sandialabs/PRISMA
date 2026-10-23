@@ -269,20 +269,24 @@ def plot_predictive_rmse(nonlin_f, x, t, y,
 
 def plot_hist_series(x, bins=None, range=None, xlabel=None, title=None,
                      f_save=None,
-                     label_font_size=None, title_font_size=None):
-    plt.hist(x, bins=bins, range=range)
+                     label_font_size=None,
+                     x_label_scinot=False,
+                     title_font_size=None):
+    plt.hist(x, bins=bins, range=range, histtype='stepfilled')
     if label_font_size is not None:
         plt.xlabel(xlabel, fontsize=label_font_size)
         plt.ylabel("count", fontsize=label_font_size)
     else:
         plt.xlabel(xlabel)
         plt.ylabel("count")
+    if x_label_scinot:
+        plt.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
     if title_font_size is not None:
         plt.title(title, fontsize=title_font_size)
     else:
         plt.title(title)
     if f_save is not None:
-        plt.savefig(f_save)
+        plt.savefig(f_save, bbox_inches='tight')
 
 
 def sort_spectrum_series(x_spect, y_spect):
@@ -298,7 +302,7 @@ def sort_spectrum_series(x_spect, y_spect):
 def plot_spectrum(x_spect_i, y_spect_i, xlabel=None, ylabel=None,
                   title=None, f_save=None,
                   label_font_size=None, title_font_size=None):
-    plt.plot(x_spect_i, y_spect_i)
+    plt.scatter(x_spect_i, y_spect_i, marker='o', alpha=.33)
     if label_font_size is not None:
         plt.xlabel(xlabel, fontsize=label_font_size)
         plt.ylabel(ylabel, fontsize=label_font_size)
@@ -320,7 +324,7 @@ def plot_spectrum_series(x_spect, y_spect, xlabel=None, ylabel=None,
                       label_font_size=label_font_size,
                       title_font_size=title_font_size)
     if f_save is not None:
-        plt.savefig(f_save)
+        plt.savefig(f_save, bbox_inches='tight')
 
 
 def plot_spectrum_series_sort(x_spect, y_spect, **kwargs):

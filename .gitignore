@@ -1,10 +1,4 @@
 __pycache__
-*.png
-*.npy
-*.zip
-*.tar
-*.gz
-*.whl
 *.egg-info
-.vscode
 dist
+.vscode
