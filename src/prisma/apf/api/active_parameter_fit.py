@@ -161,7 +161,7 @@ class ActiveParameterFitEI(AbstractActiveParameterFit):
                  beta: float, m_0: ArrayLike, S_0: ArrayLike,
                  sample_ct: int,
                  range_delta: ArrayLike,
-                 m_mask: ArrayLike = None):
+                 m_mask: ArrayLike | None = None):
         super().__init__(nonlin_f_j, acq_domain, t_sampler, beta, m_0, S_0,
                          sample_ct)
         if m_mask is None:
