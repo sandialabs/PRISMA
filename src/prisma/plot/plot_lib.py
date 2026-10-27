@@ -271,7 +271,8 @@ def plot_hist_series(x, bins=None, range=None, xlabel=None, title=None,
                      f_save=None,
                      label_font_size=None,
                      x_label_scinot=False,
-                     title_font_size=None):
+                     title_font_size=None,
+                     id=None):
     plt.hist(x, bins=bins, range=range, histtype='stepfilled')
     if label_font_size is not None:
         plt.xlabel(xlabel, fontsize=label_font_size)
@@ -285,6 +286,8 @@ def plot_hist_series(x, bins=None, range=None, xlabel=None, title=None,
         plt.title(title, fontsize=title_font_size)
     else:
         plt.title(title)
+    if id is not None:
+            plt.text(*id, va='top', ha='left')
     if f_save is not None:
         plt.savefig(f_save, bbox_inches='tight')
 
@@ -299,10 +302,16 @@ def sort_spectrum_series(x_spect, y_spect):
     return x_spect_sort, y_spect_sort
 
 
-def plot_spectrum(x_spect_i, y_spect_i, xlabel=None, ylabel=None,
-                  title=None, f_save=None,
-                  label_font_size=None, title_font_size=None):
+def plot_spectrum(x_spect_i, y_spect_i):
     plt.scatter(x_spect_i, y_spect_i, marker='o', alpha=.33)
+
+
+def plot_spectrum_series(x_spect, y_spect, xlabel=None, ylabel=None,
+                         title=None, f_save=None,
+                         label_font_size=None, title_font_size=None,
+                         id=None):
+    for i in range(len(x_spect)):
+        plot_spectrum(x_spect[i], y_spect[i])
     if label_font_size is not None:
         plt.xlabel(xlabel, fontsize=label_font_size)
         plt.ylabel(ylabel, fontsize=label_font_size)
@@ -313,16 +322,8 @@ def plot_spectrum(x_spect_i, y_spect_i, xlabel=None, ylabel=None,
         plt.title(title, fontsize=title_font_size)
     else:
         plt.title(title)
-
-
-def plot_spectrum_series(x_spect, y_spect, xlabel=None, ylabel=None,
-                         title=None, f_save=None,
-                         label_font_size=None, title_font_size=None):
-    for i in range(len(x_spect)):
-        plot_spectrum(x_spect[i], y_spect[i], xlabel=xlabel, ylabel=ylabel,
-                      title=title, f_save=f_save,
-                      label_font_size=label_font_size,
-                      title_font_size=title_font_size)
+    if id is not None:
+        plt.text(*id, va='top', ha='left')
     if f_save is not None:
         plt.savefig(f_save, bbox_inches='tight')
 
