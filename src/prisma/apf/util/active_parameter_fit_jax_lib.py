@@ -194,9 +194,9 @@ def init_arr_j(m_prior, var_prior, param_ct, sample_ct, acq_domain_len):
     m_prior_jnp = m_prior_jnp.at[0].set(m_prior)
     var_prior_jnp = jnp.zeros((prior_ct, param_ct, param_ct))
     var_prior_jnp = var_prior_jnp.at[0].set(var_prior)
-    x_n_jnp = jnp.zeros((sample_ct))
+    x_n_jnp = jnp.zeros(sample_ct)
     acq_val_jnp = jnp.zeros((sample_ct, acq_domain_len))
-    t_n_jnp = jnp.zeros((sample_ct))
+    t_n_jnp = jnp.zeros(sample_ct)
     phi_n_jnp = jnp.zeros((sample_ct, param_ct))
     return x_n_jnp, t_n_jnp, phi_n_jnp, m_prior_jnp, var_prior_jnp, acq_val_jnp
 
