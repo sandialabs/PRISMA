@@ -1,11 +1,15 @@
+from collections.abc import Sequence
 from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy.typing import ArrayLike
+from typing import Callable
 
 from prisma.apf.util.active_parameter_fit_jax_lib import get_nonlin_f_x_j, \
     get_sigma_sq_predictive_N_j
-from prisma.format import format_float_l
 from prisma.calc.metric import get_rmse_l
+from prisma.calc.dim_analysis import rescale_bounds_inv
+from prisma.format import format_float_l
 
 
 def plot_function_targets(x, y, t,
@@ -267,6 +271,17 @@ def plot_predictive_rmse(nonlin_f, x, t, y,
         plt.title("Estimation Predictive RMSE per Iteration")
 
 
+def label_id(id: str, ax: plt.Axes):
+    if id is not None:
+        ax.text(-.01, 1.1, id, va="top", ha="right",
+                transform=ax.transAxes)
+
+
+def save_figure(fig: plt.Figure, f_save: str | None = None):
+    if f_save is not None:
+        fig.savefig(f_save, bbox_inches='tight')
+
+
 def plot_hist_series(x, bins=None, range=None, xlabel=None, title=None,
                      f_save=None,
                      label_font_size=None,
@@ -287,11 +302,8 @@ def plot_hist_series(x, bins=None, range=None, xlabel=None, title=None,
         ax.set_title(title, fontsize=title_font_size)
     else:
         ax.set_title(title)
-    if id is not None:
-        ax.text(-.01, 1.1, id, va="top", ha="right",
-                transform=ax.transAxes)
-    if f_save is not None:
-        fig.savefig(f_save, bbox_inches='tight')
+    label_id(id, ax)
+    save_figure(fig, f_save=f_save)
 
 
 def sort_spectrum_series(x_spect, y_spect):
@@ -304,33 +316,69 @@ def sort_spectrum_series(x_spect, y_spect):
     return x_spect_sort, y_spect_sort
 
 
-def plot_spectrum_series(x_spect, y_spect, xlabel=None, ylabel=None,
-                         title=None, f_save=None,
-                         label_font_size=None, title_font_size=None,
-                         id=None):
-    fig, ax = plt.subplots()
+def draw_spectrum_series(x_spect, y_spect, ax):
     for i in range(len(x_spect)):
-        ax.scatter(x_spect[i], y_spect[i], marker='o', alpha=.33)
+        ax.scatter(x_spect[i], y_spect[i], marker='o', alpha=.1)
+
+
+def label_spectrum_series(ax: plt.Axes, xlabel=None, ylabel=None,
+                          title=None,
+                          label_font_size=None, title_font_size=None,
+                          id=None):
     if label_font_size is not None:
         ax.set_xlabel(xlabel, fontsize=label_font_size)
         ax.set_ylabel(ylabel, fontsize=label_font_size)
     else:
-        plt.xlabel(xlabel)
+        ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
     if title_font_size is not None:
         ax.set_title(title, fontsize=title_font_size)
     else:
         ax.set_title(title)
-    if id is not None:
-        ax.text(-.01, 1.1, id, va="top", ha="right",
-                transform=ax.transAxes)
-    if f_save is not None:
-        fig.savefig(f_save, bbox_inches='tight')
+    label_id(id, ax)
 
 
-def plot_spectrum_series_sort(x_spect, y_spect, **kwargs):
+def plot_spectrum_series(x_spect, y_spect, f_save=None, **kwargs):
+    fig, ax = plt.subplots()
+    draw_spectrum_series(x_spect, y_spect, ax)
+    label_spectrum_series(ax, **kwargs)
+    save_figure(fig, f_save=f_save)
+
+
+def draw_spectrum_fit(x_domain: ArrayLike, w_l: Sequence,
+                      fun: Callable, ax: plt.Axes,
+                      scale_bounds: tuple[float, float, float, float] = None):
+    for w in w_l:
+        y = fun(x_domain, w)
+        if scale_bounds is not None:
+            in_min, in_max, out_min, out_max = scale_bounds
+            y = rescale_bounds_inv(y,
+                                   in_min, in_max,
+                                   out_min, out_max)
+        ax.plot(x_domain, y, zorder=1)
+
+
+def plot_spectrum_series_fit(x_spect, y_spect, x_domain, w_l, fun,
+                             f_save=None, scale_bounds=None, **kwargs):
+    fig, ax = plt.subplots()
+    draw_spectrum_fit(x_domain, w_l, fun, ax, scale_bounds=scale_bounds)
+    draw_spectrum_series(x_spect, y_spect, ax)
+    label_spectrum_series(ax, **kwargs)
+    save_figure(fig, f_save=f_save)
+
+
+def plot_spectrum_series_sort(x_spect, y_spect, f_save=None, **kwargs):
     x_spect_sort, y_spect_sort = sort_spectrum_series(x_spect, y_spect)
-    plot_spectrum_series(x_spect_sort, y_spect_sort, **kwargs)
+    plot_spectrum_series(x_spect_sort, y_spect_sort, f_save=f_save, **kwargs)
+
+
+def plot_spectrum_series_fit_sort(x_spect, y_spect, x_domain, w_l, fun,
+                                  f_save=None, scale_bounds=None,
+                                  **kwargs):
+    x_spect_sort, y_spect_sort = sort_spectrum_series(x_spect, y_spect)
+    plot_spectrum_series_fit(x_spect_sort, y_spect_sort, x_domain, w_l, fun,
+                             f_save=f_save, scale_bounds=scale_bounds,
+                             **kwargs)
 
 
 def plot_spectrum_quad(sample_series, t_series, barrier_fit, barrier_stddev_ML,

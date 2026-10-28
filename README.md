@@ -62,7 +62,7 @@ acquisitions and fit model parameters.
 @software{prisma2026github,
   author = {Dante Basile and Xavier Tricoche and Sam Lilak and Devika Mehta and Luca Basso and Andy Mounce and Ezra Bussmann},
   title = {{PRISMA}: {P}hysics-informed {R}egression and {I}nference for {S}tatistics-driven {M}easurement {A}cquisition},
-  url = {http://github.com/},
+  url = {https://github.com/sandialabs/PRISMA},
   version = {0.0.1},
   year = {2026},
 }
