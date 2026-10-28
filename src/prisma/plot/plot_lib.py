@@ -273,23 +273,25 @@ def plot_hist_series(x, bins=None, range=None, xlabel=None, title=None,
                      x_label_scinot=False,
                      title_font_size=None,
                      id=None):
-    plt.hist(x, bins=bins, range=range, histtype='stepfilled')
+    fig, ax = plt.subplots()
+    ax.hist(x, bins=bins, range=range, histtype='stepfilled')
     if label_font_size is not None:
-        plt.xlabel(xlabel, fontsize=label_font_size)
-        plt.ylabel("count", fontsize=label_font_size)
+        ax.set_xlabel(xlabel, fontsize=label_font_size)
+        ax.set_ylabel("count", fontsize=label_font_size)
     else:
-        plt.xlabel(xlabel)
-        plt.ylabel("count")
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel("count")
     if x_label_scinot:
-        plt.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
+        ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
     if title_font_size is not None:
-        plt.title(title, fontsize=title_font_size)
+        ax.set_title(title, fontsize=title_font_size)
     else:
-        plt.title(title)
+        ax.set_title(title)
     if id is not None:
-            plt.text(*id, va='top', ha='left')
+        ax.text(-.01, 1.1, id, va="top", ha="right",
+                transform=ax.transAxes)
     if f_save is not None:
-        plt.savefig(f_save, bbox_inches='tight')
+        fig.savefig(f_save, bbox_inches='tight')
 
 
 def sort_spectrum_series(x_spect, y_spect):
@@ -302,30 +304,28 @@ def sort_spectrum_series(x_spect, y_spect):
     return x_spect_sort, y_spect_sort
 
 
-def plot_spectrum(x_spect_i, y_spect_i):
-    plt.scatter(x_spect_i, y_spect_i, marker='o', alpha=.33)
-
-
 def plot_spectrum_series(x_spect, y_spect, xlabel=None, ylabel=None,
                          title=None, f_save=None,
                          label_font_size=None, title_font_size=None,
                          id=None):
+    fig, ax = plt.subplots()
     for i in range(len(x_spect)):
-        plot_spectrum(x_spect[i], y_spect[i])
+        ax.scatter(x_spect[i], y_spect[i], marker='o', alpha=.33)
     if label_font_size is not None:
-        plt.xlabel(xlabel, fontsize=label_font_size)
-        plt.ylabel(ylabel, fontsize=label_font_size)
+        ax.set_xlabel(xlabel, fontsize=label_font_size)
+        ax.set_ylabel(ylabel, fontsize=label_font_size)
     else:
         plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
+        ax.set_ylabel(ylabel)
     if title_font_size is not None:
-        plt.title(title, fontsize=title_font_size)
+        ax.set_title(title, fontsize=title_font_size)
     else:
-        plt.title(title)
+        ax.set_title(title)
     if id is not None:
-        plt.text(*id, va='top', ha='left')
+        ax.text(-.01, 1.1, id, va="top", ha="right",
+                transform=ax.transAxes)
     if f_save is not None:
-        plt.savefig(f_save, bbox_inches='tight')
+        fig.savefig(f_save, bbox_inches='tight')
 
 
 def plot_spectrum_series_sort(x_spect, y_spect, **kwargs):
