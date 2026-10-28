@@ -17,9 +17,10 @@ dependencies = [
 requires-python = ">= 3.13"
 authors = [
   { name="Dante Basile", email="dbasile@purdue.edu" },
-  { name="Xavier Tricoche", email="xmt@purdue.edu" },
+  { name="Xavier Tricoche" },
   { name="Andy Mounce" },
   { name="Sam Lilak" },
+  { name="Devika Mehta" },
   { name="Luca Basso" },
   { name="Ezra Bussmann" },
 ]
