@@ -316,9 +316,19 @@ def sort_spectrum_series(x_spect, y_spect):
     return x_spect_sort, y_spect_sort
 
 
-def draw_spectrum_series(x_spect, y_spect, ax):
+def draw_spectrum_series(x_spect, y_spect, ax: plt.Axes,
+                         color=None, alpha=.1,
+                         legend=None):
     for i in range(len(x_spect)):
-        ax.scatter(x_spect[i], y_spect[i], marker='o', alpha=.1)
+        if color is not None:
+            scatter = ax.scatter(x_spect[i], y_spect[i],
+                                 marker='o',
+                                 color=color, alpha=alpha)
+        else:
+            scatter = ax.scatter(x_spect[i], y_spect[i],
+                                 marker='o', alpha=alpha)
+        if i == 0 and legend is not None:
+            scatter.set_label(legend)
 
 
 def label_spectrum_series(ax: plt.Axes, xlabel=None, ylabel=None,
@@ -336,49 +346,70 @@ def label_spectrum_series(ax: plt.Axes, xlabel=None, ylabel=None,
     else:
         ax.set_title(title)
     label_id(id, ax)
+    ax.legend()
 
 
-def plot_spectrum_series(x_spect, y_spect, f_save=None, **kwargs):
+def plot_spectrum_series(x_spect, y_spect,
+                         color=None, alpha=.1,
+                         legend="spectrum",
+                         f_save=None, **kwargs):
     fig, ax = plt.subplots()
-    draw_spectrum_series(x_spect, y_spect, ax)
+    draw_spectrum_series(x_spect, y_spect, ax,
+                         color=color, alpha=alpha,
+                         legend=legend)
     label_spectrum_series(ax, **kwargs)
     save_figure(fig, f_save=f_save)
 
 
 def draw_spectrum_fit(x_domain: ArrayLike, w_l: Sequence,
                       fun: Callable, ax: plt.Axes,
-                      scale_bounds: tuple[float, float, float, float] = None):
-    for w in w_l:
+                      scale_bounds: tuple[float, float, float, float] = None,
+                      color=None, legend="fit"):
+    for i, w in enumerate(w_l):
         y = fun(x_domain, w)
         if scale_bounds is not None:
             in_min, in_max, out_min, out_max = scale_bounds
             y = rescale_bounds_inv(y,
                                    in_min, in_max,
                                    out_min, out_max)
-        ax.plot(x_domain, y, zorder=1)
+        if color is not None:
+            line, = ax.plot(x_domain, y, zorder=1, color=color)
+        else:
+            line, = ax.plot(x_domain, y, zorder=1)
+        if i == 0 and legend is not None:
+            line.set_label(legend)
 
 
 def plot_spectrum_series_fit(x_spect, y_spect, x_domain, w_l, fun,
-                             f_save=None, scale_bounds=None, **kwargs):
+                             f_save=None, scale_bounds=None,
+                             color_fit=None, color_series=None,
+                             alpha=.1,
+                             fit_legend="fit", series_legend="spectrum",
+                             **kwargs):
     fig, ax = plt.subplots()
-    draw_spectrum_fit(x_domain, w_l, fun, ax, scale_bounds=scale_bounds)
-    draw_spectrum_series(x_spect, y_spect, ax)
+    draw_spectrum_fit(x_domain, w_l, fun, ax,
+                      scale_bounds=scale_bounds,
+                      color=color_fit,
+                      legend=fit_legend)
+    draw_spectrum_series(x_spect, y_spect, ax,
+                         color=color_series, alpha=alpha,
+                         legend=series_legend)
     label_spectrum_series(ax, **kwargs)
     save_figure(fig, f_save=f_save)
 
 
-def plot_spectrum_series_sort(x_spect, y_spect, f_save=None, **kwargs):
+def plot_spectrum_series_sort(x_spect, y_spect,
+                              alpha=.1, **kwargs):
     x_spect_sort, y_spect_sort = sort_spectrum_series(x_spect, y_spect)
-    plot_spectrum_series(x_spect_sort, y_spect_sort, f_save=f_save, **kwargs)
+    plot_spectrum_series(x_spect_sort, y_spect_sort,
+                         alpha=alpha, **kwargs)
 
 
 def plot_spectrum_series_fit_sort(x_spect, y_spect, x_domain, w_l, fun,
-                                  f_save=None, scale_bounds=None,
-                                  **kwargs):
+                                  alpha=.1, **kwargs):
     x_spect_sort, y_spect_sort = sort_spectrum_series(x_spect, y_spect)
     plot_spectrum_series_fit(x_spect_sort, y_spect_sort, x_domain, w_l, fun,
-                             f_save=f_save, scale_bounds=scale_bounds,
-                             **kwargs)
+                             alpha=alpha, **kwargs)
 
 
 def plot_spectrum_quad(sample_series, t_series, barrier_fit, barrier_stddev_ML,
