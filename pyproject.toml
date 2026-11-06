@@ -58,5 +58,5 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 
-# [project.urls]
-# Repository = "https://github.com/me/spam.git"
+[project.urls]
+Repository = "https://github.com/sandialabs/PRISMA.git"
