@@ -24,8 +24,11 @@ authors = [
   { name="Luca Basso" },
   { name="Ezra Bussmann" },
 ]
-description = """
-PRISMA (Physics-informed Regression and Inference for Statistics-driven Measurement Acquisition) is a Bayesian online nonlinear regression algorithm for active learning and SOED in spectroscopy experiments."""
+description = """\
+PRISMA (Physics-informed Regression and Inference for Statistics-driven \
+Measurement Acquisition) is a Bayesian online nonlinear regression algorithm \
+for active learning and SOED in spectroscopy experiments.\
+"""
 readme = "README.md"
 license = "BSD-3-Clause"
 license-files = ["LICEN[CS]E*"]
