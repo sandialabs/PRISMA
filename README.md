@@ -12,7 +12,7 @@ spectroscopy measurements while maintaining confidence and rigor.
 
 ## Authors and acknowledgment
 
-Developed by Dante Basile, Xavier Tricoche, Sam Lilak, Devika Mehta, Luca Basso, Andy Mounce, and Ezra Bussmann.
+Developed by Dante Basile, Xavier Tricoche, Sam Lilak, Devika Mehta, Leo Diaz, Luca Basso, Andy Mounce, and Ezra Bussmann.
 
 This software was developed as part of work at the CINT (Center for Integrated Nanotechnologies), an Office of Science User Facility operated for the U.S. Department of Energy.
 
@@ -60,7 +60,7 @@ acquisitions and fit model parameters.
 
 ```bibtex
 @software{prisma2026github,
-  author = {Dante Basile and Xavier Tricoche and Sam Lilak and Devika Mehta and Luca Basso and Andy Mounce and Ezra Bussmann},
+  author = {Dante Basile and Xavier Tricoche and Sam Lilak and Devika Mehta and Leo Diaz and Luca Basso and Andy Mounce and Ezra Bussmann},
   title = {{PRISMA}: {P}hysics-informed {R}egression and {I}nference for {S}tatistics-driven {M}easurement {A}cquisition},
   url = {https://github.com/sandialabs/PRISMA},
   version = {0.0.1},
