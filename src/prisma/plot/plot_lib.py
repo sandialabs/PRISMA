@@ -334,7 +334,8 @@ def draw_spectrum_series(x_spect, y_spect, ax: plt.Axes,
 def label_spectrum_series(ax: plt.Axes, xlabel=None, ylabel=None,
                           title=None,
                           label_font_size=None, title_font_size=None,
-                          id=None):
+                          id=None,
+                          xlim=None, ylim=None):
     if label_font_size is not None:
         ax.set_xlabel(xlabel, fontsize=label_font_size)
         ax.set_ylabel(ylabel, fontsize=label_font_size)
@@ -345,6 +346,10 @@ def label_spectrum_series(ax: plt.Axes, xlabel=None, ylabel=None,
         ax.set_title(title, fontsize=title_font_size)
     else:
         ax.set_title(title)
+    if xlim is not None:
+        ax.set_xlim(xlim)
+    if ylim is not None:
+        ax.set_ylim(ylim)
     label_id(id, ax)
     ax.legend()
 
