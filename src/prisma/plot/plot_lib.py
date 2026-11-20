@@ -145,7 +145,8 @@ def plot_predictive_acq_train_i(nonlin_f_N, x, beta, m_prior,
                                 y=None,
                                 x_n=None, t_n=None, y_ML=None, title=True,
                                 xlabel="$x$", ylabel="$y$",
-                                actual=True, title_samples=False):
+                                actual=True, title_samples=False,
+                                tight_layout=True):
     f, (a0, a1) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1]},
                                figsize=(8, 6))
     plot_predictive_train_i(a0, nonlin_f_N, x, beta, m_prior, var_prior_l, i,
@@ -153,7 +154,33 @@ def plot_predictive_acq_train_i(nonlin_f_N, x, beta, m_prior,
                             xlabel=xlabel, ylabel=ylabel, actual=actual,
                             title_samples=title_samples)
     plot_acq_train(a1, x, acq_l[i])
-    f.tight_layout()
+    if tight_layout:
+        f.tight_layout()
+    return f, a0, a1
+
+
+def label_predictive(ax: plt.Axes, xlabel=None, ylabel=None,
+                     title=None,
+                     label_font_size=None, title_font_size=None,
+                     id=None):
+    if label_font_size is not None:
+        ax.set_xlabel(xlabel, fontsize=label_font_size)
+        ax.set_ylabel(ylabel, fontsize=label_font_size)
+    else:
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+    if title_font_size is not None:
+        ax.set_title(title, fontsize=title_font_size)
+    else:
+        ax.set_title(title)
+    label_id(id, ax)
+    ax.legend()
+
+
+def plot_predictive_acq_train_fig(nonlin_f_N, x, beta,
+                                  m_prior, var_prior_l, ):
+    f, a_pred, a_acq = plot_predictive_acq_train_i()
+    label_predictive(a_pred)
 
 
 def plot_predictive_acq_train_iter(nonlin_f, x, beta, m_prior,
